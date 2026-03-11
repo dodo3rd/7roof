@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>حروف مع عزيز — متابع النقاط</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      background: #141414;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .app { min-height: 100vh; background: #141414; position: relative; }
+
+    /* ══ HEADER ══ */
+    .hdr {
+      text-align: center;
+      padding: 32px 20px 14px;
+      background: #141414;
+      border-bottom: 1px solid #242424;
+      position: relative; z-index: 1;
+    }
+    .logo { display: inline-block; line-height: 0.88; }
+    .l-h { display:block; font-size:clamp(2.4rem,8vw,4.5rem); font-weight:900; color:#FFD700; -webkit-text-stroke:3px #8a5500; text-shadow:0 4px 24px #8a550066; }
+    .l-m { display:block; font-size:clamp(1.1rem,3.5vw,2rem); font-weight:900; color:#00C2B2; -webkit-text-stroke:1.5px #004040; }
+    .l-a { display:block; font-size:clamp(1.8rem,6vw,3.6rem); font-weight:900; color:#E8302A; -webkit-text-stroke:2px #6a0000; text-shadow:0 3px 20px #E8302A44; }
+    .hdr-sub { color:#555; font-size:.8rem; margin-top:10px; letter-spacing:3px; font-weight:700; }
+
+    /* ══ PAGE WRAPPER ══ */
+    .page { max-width: 520px; margin: 0 auto; padding: 28px 16px 70px; position: relative; z-index: 1; }
+
+    /* ══ SETUP ══ */
+    .setup-title { text-align:center; margin-bottom:28px; }
+    .setup-title h2 { font-size:1.2rem; font-weight:800; color:#e0e0e0; margin-bottom:5px; }
+    .setup-title p  { font-size:.82rem; color:#555; font-weight:600; letter-spacing:1px; }
+    .pcard { border-radius:16px; margin-bottom:14px; overflow:hidden; }
+    .pcard-red  { background:#1c0000; border:2px solid #5a0000; }
+    .pcard-blue { background:#00071f; border:2px solid #0a2a70; }
+    .pcard-stripe { height:5px; }
+    .pcard-red  .pcard-stripe { background:linear-gradient(90deg,#E8302A,#ff6060); }
+    .pcard-blue .pcard-stripe { background:linear-gradient(90deg,#1B6FE8,#60a5fa); }
+    .pcard-inner { padding:18px 20px 22px; display:flex; align-items:center; gap:16px; }
+    .pcard-icon { width:54px; height:54px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.7rem; flex-shrink:0; }
+    .pcard-red  .pcard-icon { background:#2e0000; border:2px solid #5a0000; }
+    .pcard-blue .pcard-icon { background:#000b2e; border:2px solid #0a2a70; }
+    .pcard-fields { flex:1; }
+    .pcard-label { display:block; font-size:.72rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:9px; }
+    .pcard-red  .pcard-label { color:#cc4444; }
+    .pcard-blue .pcard-label { color:#4488dd; }
+    .pcard-input {
+      width:100%; background:#0d0d0d; border:1.5px solid #2a2a2a;
+      border-radius:10px; padding:13px 15px; font-size:1.05rem;
+      font-family:'Cairo',sans-serif; color:#f0f0f0;
+      outline:none; transition:border-color .2s,box-shadow .2s; direction:rtl;
+    }
+    .pcard-red  .pcard-input:focus { border-color:#E8302A; box-shadow:0 0 0 3px #E8302A22; }
+    .pcard-blue .pcard-input:focus { border-color:#1B6FE8; box-shadow:0 0 0 3px #1B6FE822; }
+    .pcard-input::placeholder { color:#3a3a3a; }
+    .err { color:#ff5555; font-size:.88rem; text-align:center; font-weight:700; margin:10px 0 4px; }
+
+    /* ══ BUTTONS ══ */
+    .btn-start {
+      width:100%; padding:17px; font-size:1.15rem; margin-top:10px;
+      background:#00C2B2; color:#001a18; border:none; border-radius:14px;
+      font-family:'Cairo',sans-serif; font-weight:900; cursor:pointer;
+      letter-spacing:.5px; transition:transform .13s,background .2s;
+      box-shadow:0 4px 20px #00C2B244;
+    }
+    .btn-start:hover { background:#00d6c4; transform:translateY(-2px); }
+    .btn-start:active { transform:scale(.97); }
+
+    .btn-p1 {
+      flex:1; padding:17px 8px; font-size:.92rem; font-weight:800;
+      font-family:'Cairo',sans-serif; background:#c41f1f; color:#fff;
+      border:none; border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px #c41f1f44; transition:transform .13s,background .2s;
+    }
+    .btn-p1:hover { background:#e03030; transform:translateY(-3px); }
+    .btn-p1:active { transform:scale(.96); }
+
+    .btn-none {
+      flex:1; padding:17px 8px; font-size:.78rem; font-weight:700;
+      font-family:'Cairo',sans-serif; background:#1e1e1e; color:#666;
+      border:1.5px solid #2e2e2e; border-radius:12px; cursor:pointer;
+      transition:transform .13s,background .2s;
+    }
+    .btn-none:hover { background:#262626; transform:translateY(-2px); }
+    .btn-none:active { transform:scale(.96); }
+
+    .btn-p2 {
+      flex:1; padding:17px 8px; font-size:.92rem; font-weight:800;
+      font-family:'Cairo',sans-serif; background:#1455c0; color:#fff;
+      border:none; border-radius:12px; cursor:pointer;
+      box-shadow:0 4px 14px #1455c044; transition:transform .13s,background .2s;
+    }
+    .btn-p2:hover { background:#1e6de8; transform:translateY(-3px); }
+    .btn-p2:active { transform:scale(.96); }
+
+    .btn-end-ep {
+      width:100%; padding:16px; font-size:1.05rem; margin-top:6px;
+      background:#c8960a; color:#fff8e1; border:none; border-radius:14px;
+      font-family:'Cairo',sans-serif; font-weight:900; cursor:pointer;
+      box-shadow:0 4px 18px #c8960a44; transition:transform .13s,background .2s;
+    }
+    .btn-end-ep:hover { background:#e0a80c; transform:translateY(-2px); }
+    .btn-end-ep:active { transform:scale(.97); }
+    .btn-end-ep:disabled { opacity:.3; cursor:default; transform:none !important; box-shadow:none; }
+
+    .btn-next-ep {
+      width:100%; padding:18px; font-size:1.1rem;
+      background:#1455c0; color:#fff; border:none; border-radius:14px;
+      font-family:'Cairo',sans-serif; font-weight:900; cursor:pointer;
+      box-shadow:0 4px 20px #1455c055; transition:transform .13s,background .2s;
+    }
+    .btn-next-ep:hover { background:#1e6de8; transform:translateY(-2px); }
+    .btn-next-ep:active { transform:scale(.97); }
+
+    .btn-history {
+      width:100%; padding:18px; font-size:1.1rem; margin-top:12px;
+      background:#1a1a1a; color:#aaa; border:2px solid #2e2e2e; border-radius:14px;
+      font-family:'Cairo',sans-serif; font-weight:800; cursor:pointer;
+      transition:transform .13s,background .2s;
+    }
+    .btn-history:hover { background:#222; transform:translateY(-2px); }
+    .btn-history:active { transform:scale(.97); }
+
+    .btn-end-all {
+      width:100%; padding:14px; font-size:.95rem; margin-top:12px;
+      background:#200000; color:#cc3333; border:2px solid #4a0000;
+      border-radius:14px; font-family:'Cairo',sans-serif; font-weight:800;
+      cursor:pointer; transition:background .2s,transform .13s;
+    }
+    .btn-end-all:hover { background:#2e0000; transform:translateY(-1px); }
+    .btn-end-all:active { transform:scale(.97); }
+
+    .btn-restart {
+      width:100%; padding:16px; font-size:1.05rem; margin-top:14px;
+      background:#00C2B2; color:#001a18; border:none; border-radius:14px;
+      font-family:'Cairo',sans-serif; font-weight:900; cursor:pointer;
+      transition:transform .13s,background .2s;
+    }
+    .btn-restart:hover { background:#00d6c4; transform:translateY(-2px); }
+    .btn-restart:active { transform:scale(.97); }
+
+    .btn-back {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:10px 18px; font-size:.88rem; font-weight:700;
+      font-family:'Cairo',sans-serif; background:#1a1a1a; color:#888;
+      border:1.5px solid #2a2a2a; border-radius:50px;
+      cursor:pointer; transition:background .2s; margin-bottom:20px;
+    }
+    .btn-back:hover { background:#222; }
+
+    /* ══ EPISODE BADGE ══ */
+    .ep-badge { text-align:center; margin-bottom:18px; }
+    .ep-badge-inner {
+      display:inline-block; background:#1c1600; border:2px solid #4a3a00;
+      color:#FFD700; padding:8px 30px; border-radius:50px;
+      font-size:1rem; font-weight:700;
+    }
+
+    /* ══ SCOREBOARD (playing view) ══ */
+    .scoreboard {
+      display:flex; margin-bottom:16px;
+      border-radius:18px; overflow:visible;
+      position:relative; z-index:1;
+    }
+    .sc {
+      flex:1; padding:26px 16px 22px; text-align:center;
+      position:relative; border:2px solid #2a2a2a;
+      transition:border-color .35s,box-shadow .35s;
+    }
+    .sc-red  { background:#160000; border-radius:18px 0 0 18px; border-right-color:#1e1e1e; }
+    .sc-blue { background:#00040f; border-radius:0 18px 18px 0; }
+    .sc-red::before  { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:#E8302A; border-radius:16px 0 0 0; }
+    .sc-blue::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:#1B6FE8; border-radius:0 16px 0 0; }
+    .sc.leading { border-color:#c8a000; z-index:2; animation:goldPulse 2s ease-in-out infinite; }
+    .sc-red.leading  { border-radius:18px 0 0 18px; }
+    .sc-blue.leading { border-radius:0 18px 18px 0; }
+    @keyframes goldPulse {
+      0%,100% { box-shadow:0 0 0 1px #c8a00055,0 0 20px 5px #FFD70033,0 0 50px 14px #FFD70018,inset 0 0 28px #FFD70010; border-color:#c8a000; }
+      50%      { box-shadow:0 0 0 2px #FFD70088,0 0 32px 9px #FFD70055,0 0 72px 22px #FFD70028,inset 0 0 40px #FFD70018; border-color:#FFD700; }
+    }
+    .sc-team { font-size:.66rem; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:5px; }
+    .sc-red  .sc-team { color:#6a2020; }
+    .sc-blue .sc-team { color:#1a3a6a; }
+    .sc-name { font-size:1rem; font-weight:800; margin-bottom:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .sc-red  .sc-name { color:#dd5555; }
+    .sc-blue .sc-name { color:#5599ee; }
+    .sc-num { font-size:6rem; font-weight:900; line-height:1; letter-spacing:-4px; color:#fff; font-variant-numeric:tabular-nums; }
+    .sc-red  .sc-num { text-shadow:0 0 28px #E8302A88,0 3px 0 #000; }
+    .sc-blue .sc-num { text-shadow:0 0 28px #1B6FE888,0 3px 0 #000; }
+    .sc-pip { display:inline-block; margin-top:12px; padding:4px 14px; border-radius:50px; font-size:.72rem; font-weight:700; }
+    .sc-red  .sc-pip { background:#2a0000; color:#884444; border:1px solid #3a0000; }
+    .sc-blue .sc-pip { background:#000820; color:#335588; border:1px solid #0a1a40; }
+
+    /* ══ Q BOX ══ */
+    .q-box { background:#191919; border:2px solid #282828; border-radius:16px; padding:22px 18px; margin-bottom:12px; }
+    .q-label { text-align:center; color:#ccc; font-size:1rem; font-weight:700; margin-bottom:14px; }
+    .q-num { color:#FFD700; font-size:1.25rem; font-weight:900; }
+    .q-btns { display:flex; gap:9px; }
+    .q-log { display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+    .ql { padding:5px 13px; border-radius:50px; font-size:.76rem; font-weight:700; display:flex; align-items:center; gap:5px; }
+    .ql-red  { background:#2a0000; border:1.5px solid #5a0000; color:#dd6666; }
+    .ql-blue { background:#000820; border:1.5px solid #0a2a60; color:#5599ee; }
+    .ql-none { background:#1a1a1a; border:1.5px solid #2a2a2a; color:#555; }
+
+    /* ══ DASHBOARD ══ */
+    .dash-last-ep {
+      background:#161200; border:2px solid #4a3800; border-radius:16px;
+      padding:22px 20px; margin-bottom:20px; text-align:center;
+      animation:slideUp .35s ease;
+    }
+    .dash-last-label { font-size:.75rem; font-weight:700; letter-spacing:2px; color:#6a5500; text-transform:uppercase; margin-bottom:6px; }
+    .dash-last-trophy { font-size:2.4rem; margin-bottom:4px; }
+    .dash-last-winner { font-size:1.8rem; font-weight:900; color:#FFD700; -webkit-text-stroke:1px #8a5500; margin-bottom:10px; }
+    .dash-last-scores { display:flex; justify-content:center; gap:20px; }
+    .dls { text-align:center; }
+    .dls-n { font-size:1.8rem; font-weight:900; }
+    .dls-n.win { color:#FFD700; }
+    .dls-n.los { color:#333; }
+    .dls-lbl { font-size:.75rem; color:#666; }
+
+    .dash-overall {
+      display:flex; gap:10px; margin-bottom:20px;
+    }
+    .dash-ov-card {
+      flex:1; border-radius:14px; padding:16px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .dash-ov-red  { background:#1a0000; border:2px solid #4a0000; }
+    .dash-ov-blue { background:#00061a; border:2px solid #0a2060; }
+    .dov-info { }
+    .dov-name  { font-size:.9rem; font-weight:800; }
+    .dash-ov-red  .dov-name  { color:#cc4444; }
+    .dash-ov-blue .dov-name  { color:#4488dd; }
+    .dov-label { font-size:.65rem; color:#444; font-weight:600; margin-top:2px; }
+    .dov-count { font-size:2.2rem; font-weight:900; }
+    .dash-ov-red  .dov-count { color:#E8302A; }
+    .dash-ov-blue .dov-count { color:#1B6FE8; }
+
+    .dash-actions-title {
+      text-align:center; font-size:.75rem; font-weight:700;
+      letter-spacing:2px; color:#444; text-transform:uppercase;
+      margin-bottom:14px;
+    }
+
+    /* ══ HISTORY PAGE ══ */
+    .hist-title { color:#888; font-size:1rem; font-weight:800; text-align:center; margin-bottom:16px; letter-spacing:1px; }
+    .hist-item {
+      background:#181818; border:1.5px solid #242424; border-radius:12px;
+      padding:13px 16px; display:flex; align-items:center;
+      justify-content:space-between; margin-bottom:8px; transition:background .15s;
+    }
+    .hist-item:hover { background:#1e1e1e; }
+    .hist-ep  { color:#444; font-size:.8rem; font-weight:600; margin-bottom:2px; }
+    .hist-win { font-weight:800; font-size:.93rem; }
+    .hist-win.r { color:#dd5555; }
+    .hist-win.b { color:#5599ee; }
+    .hist-win.d { color:#555; }
+    .hist-sc  { display:flex; gap:10px; align-items:center; }
+    .hs       { font-size:1.1rem; font-weight:900; }
+    .hs.r     { color:#E8302A; }
+    .hs.b     { color:#1B6FE8; }
+    .hs-sep   { color:#2a2a2a; }
+    .no-hist  { text-align:center; color:#444; font-size:.95rem; font-weight:600; padding:40px 0; }
+
+    /* ══ FINAL ══ */
+    .final-card { background:#141000; border:2px solid #4a3800; border-radius:20px; padding:46px 28px; text-align:center; }
+    .final-crown  { font-size:4.5rem; margin-bottom:10px; animation:bounce 1s infinite; }
+    .final-lbl    { color:#666; font-size:1rem; margin-bottom:4px; font-weight:600; }
+    .final-winner { font-size:2.8rem; font-weight:900; color:#FFD700; -webkit-text-stroke:2px #8a5500; margin-bottom:20px; }
+    .final-tally  { display:flex; justify-content:center; gap:30px; margin:18px 0 28px; }
+    .ft     { text-align:center; }
+    .ft-n   { font-size:3.2rem; font-weight:900; }
+    .ft-n.win { color:#FFD700; text-shadow:0 0 24px #FFD70066; }
+    .ft-n.los { color:#2a2a2a; }
+    .ft-lbl { font-size:.87rem; color:#555; font-weight:700; }
+    .ft-sub { font-size:.7rem; color:#3a3a3a; margin-top:2px; }
+    .ft-sep { align-self:center; font-size:2rem; color:#222; }
+    .draw-lbl { font-size:2.3rem; font-weight:900; color:#777; margin-bottom:12px; }
+
+    /* ══ MODAL ══ */
+    .modal-bg {
+      position:fixed; inset:0; background:#000000cc; z-index:200;
+      display:flex; align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-box {
+      background:#161616; border:2px solid #4a0000; border-radius:20px;
+      padding:34px 28px; max-width:380px; width:100%; text-align:center;
+      animation:popIn .3s cubic-bezier(.175,.885,.32,1.275);
+    }
+    .modal-box h3 { color:#dd4444; font-size:1.3rem; margin-bottom:10px; font-weight:800; }
+    .modal-box p  { color:#777; font-size:.93rem; margin-bottom:24px; line-height:1.7; }
+    .modal-btns   { display:flex; gap:12px; }
+    .modal-cancel {
+      flex:1; padding:14px; font-size:1rem; font-family:'Cairo',sans-serif;
+      font-weight:700; background:#1e1e1e; color:#888;
+      border:1.5px solid #2e2e2e; border-radius:12px;
+      cursor:pointer; transition:background .2s;
+    }
+    .modal-cancel:hover { background:#252525; }
+    .modal-confirm {
+      flex:1; padding:14px; font-size:1rem; font-family:'Cairo',sans-serif;
+      font-weight:900; background:#c41f1f; color:#fff; border:none;
+      border-radius:12px; cursor:pointer; transition:transform .13s,background .2s;
+    }
+    .modal-confirm:hover { background:#e03030; transform:translateY(-2px); }
+    .modal-confirm:active { transform:scale(.97); }
+
+    /* ══ HEX BG SVG ══ */
+    .hexbg { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+
+    @keyframes bounce   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes popIn    { from{transform:scale(.8);opacity:0} to{transform:scale(1);opacity:1} }
+    @keyframes slideUp  { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    /* ── Confetti ── */
+    function Confetti({ active }) {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (!active) return;
+        const canvas = ref.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const colors = ["#FFD700","#E8302A","#1B6FE8","#fff","#FF8C00","#60a5fa","#f472b6"];
+        const pieces = Array.from({length:180}, () => ({
+          x:Math.random()*canvas.width, y:-20,
+          w:Math.random()*14+5, h:Math.random()*9+4,
+          color:colors[Math.floor(Math.random()*colors.length)],
+          speed:Math.random()*4+2, angle:Math.random()*Math.PI*2,
+          spin:(Math.random()-.5)*.18, drift:(Math.random()-.5)*2.5,
+        }));
+        let alive = true;
+        const draw = () => {
+          if (!alive) return;
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          pieces.forEach(p => {
+            ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.angle);
+            ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+            p.y+=p.speed; p.x+=p.drift; p.angle+=p.spin;
+            if(p.y>canvas.height){p.y=-20;p.x=Math.random()*canvas.width;}
+          });
+          requestAnimationFrame(draw);
+        };
+        draw();
+        const t = setTimeout(()=>{alive=false;ctx.clearRect(0,0,canvas.width,canvas.height);},5000);
+        return ()=>{alive=false;clearTimeout(t);};
+      }, [active]);
+      if (!active) return null;
+      return <canvas ref={ref} style={{position:"fixed",top:0,left:0,pointerEvents:"none",zIndex:9999}} />;
+    }
+
+    /* ── HexBg ── */
+    const HexBg = () => (
+      <svg className="hexbg" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="hexp" x="0" y="0" width="60" height="52" patternUnits="userSpaceOnUse">
+            <polygon points="30,2 56,16 56,40 30,54 4,40 4,16"  fill="none" stroke="#2e2e2e" strokeWidth="1.5"/>
+            <polygon points="60,28 86,42 86,66 60,80 34,66 34,42" fill="none" stroke="#2e2e2e" strokeWidth="1.5"/>
+            <polygon points="0,28 26,42 26,66 0,80 -26,66 -26,42" fill="none" stroke="#2e2e2e" strokeWidth="1.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#hexp)"/>
+      </svg>
+    );
+
+    /* ══════════════════════════════════════════ */
+    function App() {
+      // phases: setup | playing | dashboard | history | final
+      const [phase, setPhase]           = useState("setup");
+      const [p1Input, setP1Input]       = useState("");
+      const [p2Input, setP2Input]       = useState("");
+      const [names, setNames]           = useState({ p1:"", p2:"" });
+      const [episodeNum, setEpisodeNum] = useState(1);
+      const [score, setScore]           = useState({ p1:0, p2:0 });
+      const [questions, setQuestions]   = useState([]);
+      const [history, setHistory]       = useState([]);
+      const [lastResult, setLastResult] = useState(null);
+      const [confetti, setConfetti]     = useState(false);
+      const [err, setErr]               = useState("");
+      const [showEndConfirm, setShowEndConfirm] = useState(false);
+      const [finalData, setFinalData]   = useState(null);
+
+      const handleStart = () => {
+        if (!p1Input.trim() || !p2Input.trim()) { setErr("الرجاء إدخال اسمي اللاعبَين"); return; }
+        setNames({ p1:p1Input.trim(), p2:p2Input.trim() });
+        setPhase("playing");
+      };
+
+      const recordQ = (winner) => {
+        setQuestions(q => [...q, { n:q.length+1, winner }]);
+        if (winner==="p1") setScore(s=>({...s,p1:s.p1+1}));
+        else if (winner==="p2") setScore(s=>({...s,p2:s.p2+1}));
+      };
+
+      const endEpisode = () => {
+        if (questions.length===0) return;
+        let winner = "draw";
+        if (score.p1>score.p2) winner="p1";
+        else if (score.p2>score.p1) winner="p2";
+        const result = { ep:episodeNum, p1:score.p1, p2:score.p2, winner };
+        setHistory(h=>[...h,result]);
+        setLastResult(result);
+        if (winner!=="draw") { setConfetti(true); setTimeout(()=>setConfetti(false),5500); }
+        // ✅ Go straight to dashboard
+        setPhase("dashboard");
+      };
+
+      const startNextEpisode = () => {
+        setEpisodeNum(n=>n+1);
+        setScore({p1:0,p2:0});
+        setQuestions([]);
+        setPhase("playing");
+      };
+
+      const endAll = () => {
+        setShowEndConfirm(false);
+        const wins = {
+          p1: history.filter(h=>h.winner==="p1").length,
+          p2: history.filter(h=>h.winner==="p2").length,
+        };
+        setFinalData({ wins });
+        setPhase("final");
+        if (wins.p1!==wins.p2) { setConfetti(true); setTimeout(()=>setConfetti(false),6000); }
+      };
+
+      const restart = () => {
+        setPhase("setup"); setP1Input(""); setP2Input(""); setNames({p1:"",p2:""});
+        setEpisodeNum(1); setScore({p1:0,p2:0}); setQuestions([]);
+        setHistory([]); setLastResult(null); setFinalData(null); setShowEndConfirm(false);
+      };
+
+      const totalWins = {
+        p1: history.filter(h=>h.winner==="p1").length,
+        p2: history.filter(h=>h.winner==="p2").length,
+      };
+
+      return (
+        <>
+          <Confetti active={confetti} />
+          <div className="app">
+            <HexBg />
+
+            {/* ── HEADER ── */}
+            <div className="hdr">
+              <div className="logo">
+                <span className="l-h">حروف</span>
+                <span className="l-m">مع</span>
+                <span className="l-a">عزيز</span>
+              </div>
+              <p className="hdr-sub">🎮 متابع الحلقات والنقاط</p>
+            </div>
+
+            {/* ══ SETUP ══ */}
+            {phase==="setup" && (
+              <div className="page">
+                <div className="setup-title">
+                  <h2>أدخل الأسماء مرة واحدة</h2>
+                  <p>ستبقى ثابتة طوال المتابعة</p>
+                </div>
+                <div className="pcard pcard-red">
+                  <div className="pcard-stripe"/>
+                  <div className="pcard-inner">
+                    <div className="pcard-icon">🔴</div>
+                    <div className="pcard-fields">
+                      <span className="pcard-label">الفريق الأحمر</span>
+                      <input className="pcard-input" placeholder="اسم اللاعب الأول..."
+                        value={p1Input} onChange={e=>{setP1Input(e.target.value);setErr("");}}
+                        onKeyDown={e=>e.key==="Enter"&&handleStart()} />
+                    </div>
+                  </div>
+                </div>
+                <div className="pcard pcard-blue">
+                  <div className="pcard-stripe"/>
+                  <div className="pcard-inner">
+                    <div className="pcard-icon">🔵</div>
+                    <div className="pcard-fields">
+                      <span className="pcard-label">الفريق الأزرق</span>
+                      <input className="pcard-input" placeholder="اسم اللاعب الثاني..."
+                        value={p2Input} onChange={e=>{setP2Input(e.target.value);setErr("");}}
+                        onKeyDown={e=>e.key==="Enter"&&handleStart()} />
+                    </div>
+                  </div>
+                </div>
+                {err && <p className="err">{err}</p>}
+                <button className="btn-start" onClick={handleStart}>✅ ابدأ المتابعة</button>
+              </div>
+            )}
+
+            {/* ══ PLAYING ══ */}
+            {phase==="playing" && (
+              <div className="page">
+                <div className="ep-badge">
+                  <span className="ep-badge-inner">📺 الحلقة {episodeNum}</span>
+                </div>
+
+                <div className="scoreboard">
+                  <div className={`sc sc-red${score.p1>score.p2?" leading":""}`}>
+                    <div className="sc-team">الفريق الأحمر</div>
+                    <div className="sc-name">🔴 {names.p1}</div>
+                    <div className="sc-num">{score.p1}</div>
+                    <div className="sc-pip">نقطة في الحلقة</div>
+                  </div>
+                  <div className={`sc sc-blue${score.p2>score.p1?" leading":""}`}>
+                    <div className="sc-team">الفريق الأزرق</div>
+                    <div className="sc-name">🔵 {names.p2}</div>
+                    <div className="sc-num">{score.p2}</div>
+                    <div className="sc-pip">نقطة في الحلقة</div>
+                  </div>
+                </div>
+
+                <div className="q-box">
+                  <div className="q-label">
+                    السؤال <span className="q-num">{questions.length+1}</span> — من أجاب؟
+                  </div>
+                  <div className="q-btns">
+                    <button className="btn-p1" onClick={()=>recordQ("p1")}>🔴 {names.p1}</button>
+                    <button className="btn-none" onClick={()=>recordQ("none")}>🚫 لم يجب أحد</button>
+                    <button className="btn-p2" onClick={()=>recordQ("p2")}>🔵 {names.p2}</button>
+                  </div>
+                  {questions.length>0 && (
+                    <div className="q-log">
+                      {questions.map((q,i)=>(
+                        <div key={i} className={`ql ${q.winner==="p1"?"ql-red":q.winner==="p2"?"ql-blue":"ql-none"}`}>
+                          <span>س{q.n}</span>
+                          <span>{q.winner==="p1"?`🔴 ${names.p1}`:q.winner==="p2"?`🔵 ${names.p2}`:"🚫"}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <button className="btn-end-ep" onClick={endEpisode} disabled={questions.length===0}>
+                  🏁 إنهاء الحلقة وإعلان الفائز
+                </button>
+                <button className="btn-end-all" onClick={()=>setShowEndConfirm(true)}>
+                  🛑 إنهاء المتابعة كلها وإعلان الفائز النهائي
+                </button>
+              </div>
+            )}
+
+            {/* ══ DASHBOARD ══ */}
+            {phase==="dashboard" && (
+              <div className="page">
+
+                {/* Last episode result */}
+                {lastResult && (
+                  <div className="dash-last-ep">
+                    <div className="dash-last-label">نتيجة الحلقة {lastResult.ep}</div>
+                    <div className="dash-last-trophy">{lastResult.winner==="draw"?"🤝":"🏆"}</div>
+                    {lastResult.winner==="draw"
+                      ? <div className="draw-lbl" style={{fontSize:"1.6rem",color:"#777",marginBottom:10}}>تعادل!</div>
+                      : <div className="dash-last-winner">{lastResult.winner==="p1"?names.p1:names.p2} فاز 🎉</div>
+                    }
+                    <div className="dash-last-scores">
+                      <div className="dls">
+                        <div className={`dls-n ${lastResult.winner==="p1"?"win":"los"}`}>{lastResult.p1}</div>
+                        <div className="dls-lbl">{names.p1}</div>
+                      </div>
+                      <div style={{alignSelf:"center",color:"#333",fontSize:"1.6rem"}}>—</div>
+                      <div className="dls">
+                        <div className={`dls-n ${lastResult.winner==="p2"?"win":"los"}`}>{lastResult.p2}</div>
+                        <div className="dls-lbl">{names.p2}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Overall wins */}
+                <div className="dash-overall">
+                  <div className="dash-ov-card dash-ov-red">
+                    <div className="dov-info">
+                      <div className="dov-name">🔴 {names.p1}</div>
+                      <div className="dov-label">حلقات فائزة</div>
+                    </div>
+                    <div className="dov-count">{totalWins.p1}</div>
+                  </div>
+                  <div className="dash-ov-card dash-ov-blue">
+                    <div className="dov-info">
+                      <div className="dov-name">🔵 {names.p2}</div>
+                      <div className="dov-label">حلقات فائزة</div>
+                    </div>
+                    <div className="dov-count">{totalWins.p2}</div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="dash-actions-title">ماذا تريد أن تفعل؟</div>
+                <button className="btn-next-ep" onClick={startNextEpisode}>
+                  ▶️ العب الحلقة {episodeNum + 1}
+                </button>
+                <button className="btn-history" onClick={()=>setPhase("history")}>
+                  📋 استعرض الحلقات السابقة
+                </button>
+                <button className="btn-end-all" onClick={()=>setShowEndConfirm(true)}>
+                  🛑 إنهاء المتابعة كلها وإعلان الفائز النهائي
+                </button>
+              </div>
+            )}
+
+            {/* ══ HISTORY ══ */}
+            {phase==="history" && (
+              <div className="page">
+                <button className="btn-back" onClick={()=>setPhase("dashboard")}>
+                  ← رجوع للرئيسية
+                </button>
+                <div className="hist-title">📋 سجل الحلقات</div>
+                {history.length===0
+                  ? <div className="no-hist">لا توجد حلقات مسجلة بعد</div>
+                  : [...history].reverse().map(h=>(
+                      <div key={h.ep} className="hist-item">
+                        <div>
+                          <div className="hist-ep">الحلقة {h.ep}</div>
+                          <div className={`hist-win ${h.winner==="p1"?"r":h.winner==="p2"?"b":"d"}`}>
+                            {h.winner==="draw"?"🤝 تعادل":h.winner==="p1"?`🏆 ${names.p1}`:`🏆 ${names.p2}`}
+                          </div>
+                        </div>
+                        <div className="hist-sc">
+                          <span className="hs r">{h.p1}</span>
+                          <span className="hs-sep">—</span>
+                          <span className="hs b">{h.p2}</span>
+                        </div>
+                      </div>
+                    ))
+                }
+              </div>
+            )}
+
+            {/* ══ FINAL ══ */}
+            {phase==="final" && finalData && (()=>{
+              const { wins } = finalData;
+              const gw = wins.p1>wins.p2?"p1":wins.p2>wins.p1?"p2":"draw";
+              return (
+                <div className="page">
+                  <div className="final-card">
+                    {gw==="draw"
+                      ? (<><div className="final-crown">🤝</div><div className="draw-lbl">تعادل رائع!</div><p style={{color:"#555",marginBottom:22,fontSize:".93rem"}}>انتهت المتابعة بتعادل بين الفريقين</p></>)
+                      : (<><div className="final-crown">👑</div><div className="final-lbl">الفائز النهائي لكل المتابعة</div><div className="final-winner">{gw==="p1"?names.p1:names.p2} 🎊</div></>)
+                    }
+                    <div className="final-tally">
+                      <div className="ft">
+                        <div className={`ft-n ${gw==="p1"?"win":"los"}`}>{wins.p1}</div>
+                        <div className="ft-lbl">{names.p1}</div>
+                        <div className="ft-sub">حلقة فائزة</div>
+                      </div>
+                      <div className="ft-sep">—</div>
+                      <div className="ft">
+                        <div className={`ft-n ${gw==="p2"?"win":"los"}`}>{wins.p2}</div>
+                        <div className="ft-lbl">{names.p2}</div>
+                        <div className="ft-sub">حلقة فائزة</div>
+                      </div>
+                    </div>
+                    <button className="btn-history" onClick={()=>setPhase("history")} style={{marginBottom:0}}>
+                      📋 استعرض سجل الحلقات
+                    </button>
+                    <button className="btn-restart" onClick={restart}>🔄 بدء متابعة جديدة</button>
+                  </div>
+                </div>
+              );
+            })()}
+
+          </div>
+
+          {/* ══ CONFIRM MODAL ══ */}
+          {showEndConfirm && (
+            <div className="modal-bg">
+              <div className="modal-box">
+                <h3>🛑 إنهاء المتابعة؟</h3>
+                <p>هل أنت متأكد أنك تريد إنهاء المتابعة كلها والإعلان عن الفائز النهائي؟<br/>لن تتمكن من العودة بعد ذلك.</p>
+                <div className="modal-btns">
+                  <button className="modal-cancel" onClick={()=>setShowEndConfirm(false)}>لا، تراجع</button>
+                  <button className="modal-confirm" onClick={endAll}>نعم، أنهِ</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
