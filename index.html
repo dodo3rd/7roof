@@ -380,22 +380,38 @@
       </svg>
     );
 
+    /* ── localStorage helpers ── */
+    const SAVE_KEY = "horouf_aziz_v1";
+    function loadSaved() {
+      try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; } catch(e) { return {}; }
+    }
+    function usePersisted(key, def) {
+      const saved = loadSaved();
+      return useState(saved[key] !== undefined ? saved[key] : def);
+    }
+
     /* ══════════════════════════════════════════ */
     function App() {
       // phases: setup | playing | dashboard | history | final
-      const [phase, setPhase]           = useState("setup");
+      const [phase, setPhase]           = usePersisted("phase", "setup");
       const [p1Input, setP1Input]       = useState("");
       const [p2Input, setP2Input]       = useState("");
-      const [names, setNames]           = useState({ p1:"", p2:"" });
-      const [episodeNum, setEpisodeNum] = useState(1);
-      const [score, setScore]           = useState({ p1:0, p2:0 });
-      const [questions, setQuestions]   = useState([]);
-      const [history, setHistory]       = useState([]);
-      const [lastResult, setLastResult] = useState(null);
+      const [names, setNames]           = usePersisted("names", { p1:"", p2:"" });
+      const [episodeNum, setEpisodeNum] = usePersisted("episodeNum", 1);
+      const [score, setScore]           = usePersisted("score", { p1:0, p2:0 });
+      const [questions, setQuestions]   = usePersisted("questions", []);
+      const [history, setHistory]       = usePersisted("history", []);
+      const [lastResult, setLastResult] = usePersisted("lastResult", null);
       const [confetti, setConfetti]     = useState(false);
       const [err, setErr]               = useState("");
       const [showEndConfirm, setShowEndConfirm] = useState(false);
-      const [finalData, setFinalData]   = useState(null);
+      const [finalData, setFinalData]   = usePersisted("finalData", null);
+
+      // ── Save everything to localStorage on every change ──
+      useEffect(() => {
+        const data = { phase, names, episodeNum, score, questions, history, lastResult, finalData };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+      }, [phase, names, episodeNum, score, questions, history, lastResult, finalData]);
 
       const handleStart = () => {
         if (!p1Input.trim() || !p2Input.trim()) { setErr("الرجاء إدخال اسمي اللاعبَين"); return; }
@@ -441,6 +457,7 @@
       };
 
       const restart = () => {
+        localStorage.removeItem(SAVE_KEY);
         setPhase("setup"); setP1Input(""); setP2Input(""); setNames({p1:"",p2:""});
         setEpisodeNum(1); setScore({p1:0,p2:0}); setQuestions([]);
         setHistory([]); setLastResult(null); setFinalData(null); setShowEndConfirm(false);
